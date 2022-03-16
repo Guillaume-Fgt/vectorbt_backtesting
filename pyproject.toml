@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "vectorbt_backtesting"
+version = "0.1.0"
+description = ""
+authors = ["Guillaume Faguet <guillaume.faguet@protonmail.com>"]
+
+[tool.poetry.dependencies]
+python = "3.9.*"
+vectorbt = "^0.23.2"
+yfinance = "^0.1.70"
+numpy = "^1.22.3"
+kaleido = "0.2.1"
+pandas-ta = "^0.3.14-beta.0"
+streamlit = "^1.7.0"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+black = "^22.1.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
