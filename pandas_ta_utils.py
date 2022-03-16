@@ -9,7 +9,7 @@ def list_ind():
     return indicators
 
 
-cac = pd.read_csv("data.csv", index_col=0, parse_dates=True)
+# cac = pd.read_csv("data.csv", index_col=0, parse_dates=True)
 
 # # abb = ta.aberration(cac["High"], cac["Low"], cac["Close"])
 # # print(abb)
@@ -24,6 +24,10 @@ cac = pd.read_csv("data.csv", index_col=0, parse_dates=True)
 # atr = TA.run(cac["High"], cac["Low"], cac["Close"], short_name="atr")
 # print(atr.output_names)
 
-TA = vbt.IndicatorFactory.from_pandas_ta("psl")
-psl = TA.run(cac["Close"], cac["Open"])
-print(psl.output_names)
+# TA = vbt.IndicatorFactory.from_pandas_ta("psl")
+# psl = TA.run(cac["Close"], cac["Open"])
+# print(dir(psl))
+
+# TA = vbt.IndicatorFactory.from_pandas_ta("rsi")
+# rsi = TA.run(cac["Close"])
+# print(dir(rsi))

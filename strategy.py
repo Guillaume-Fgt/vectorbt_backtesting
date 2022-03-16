@@ -23,19 +23,39 @@ def calc_ind(col, container, indicator, dict_ind):
     TA = vbt.IndicatorFactory.from_pandas_ta(indicator)
     ta = TA.run(**dict_ind)
     output_names = ta.output_names
+    functions_dict = {
+        "rsi": rsi,
+    }
+
     tuple_return = ()
     for name in output_names:
-        tuple_return = tuple_return + (
-            container.text(name),
-            container.text(getattr(ta, name)),
-        )
+        if name in functions_dict:
+            entries, exits, fig = functions_dict[name](ta)
+            # strategy
+            portfolio = vbt.Portfolio.from_signals(
+                cac["Close"], entries, exits, init_cash=10000
+            )
+            fig_portfolio = portfolio.plot()
+            tuple_return = (
+                col.text(portfolio.stats(silence_warnings=True)),
+                container.subheader("Indicator chart"),
+                container.plotly_chart(fig, use_container_width=True),
+                container.subheader("Strategy chart"),
+                container.plotly_chart(fig_portfolio, use_container_width=True),
+            )
+            return tuple_return
+        else:
+            tuple_return = tuple_return + (
+                container.text(name),
+                container.dataframe(getattr(ta, name)),
+            )
     # try:
     #     entries = getattr(ta, indicator).vbt.crossed_above(50)
     #     exits = getattr(ta, indicator).vbt.crossed_below(50)
     # except AttributeError:
     #     return col.text("Not working yet")
 
-    # # see indicator plot with unique entries and exits
+    # see indicator plot with unique entries and exits
     # clean_entries, clean_exits = entries.vbt.signals.clean(exits)
     # fig = plot_indicator(getattr(ta, indicator), clean_entries, clean_exits)
 
@@ -45,13 +65,13 @@ def calc_ind(col, container, indicator, dict_ind):
     # )
     # fig_portfolio = portfolio.plot()
     # tuple_return = (
-    #     col.text(portfolio.stats(silence_warnings=True)),
-    #     container.subheader("Indicator chart"),
+    #     #     col.text(portfolio.stats(silence_warnings=True)),
+    #     #     container.subheader("Indicator chart"),
     #     container.plotly_chart(fig, use_container_width=True),
-    #     container.subheader("Strategy chart"),
-    #     container.plotly_chart(fig_portfolio, use_container_width=True),
+    #     #     container.subheader("Strategy chart"),
+    #     #     container.plotly_chart(fig_portfolio, use_container_width=True),
     # )
-    return tuple_return
+    # return tuple_return
 
     # PSL = vbt.IndicatorFactory.from_pandas_ta("psl")
     # psl = PSL.run(cac["Close"], cac["Open"])
@@ -64,6 +84,14 @@ def plot_indicator(indicator, entries, exits):
     entries.vbt.signals.plot_as_entry_markers(indicator, fig=fig)
     exits.vbt.signals.plot_as_exit_markers(indicator, fig=fig)
     return fig
+
+
+def rsi(ta):
+    entries = ta.rsi_crossed_above(70)
+    exits = ta.rsi_crossed_below(30)
+    clean_entries, clean_exits = entries.vbt.signals.clean(exits)
+    fig = plot_indicator(ta.rsi, clean_entries, clean_exits)
+    return entries, exits, fig
 
 
 # # strategy plot
