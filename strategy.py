@@ -27,7 +27,6 @@ def calc_ind(col, container, indicator, dict_ind):
         "rsi": rsi,
     }
 
-    tuple_return = ()
     for name in output_names:
         if name in functions_dict:
             entries, exits, fig = functions_dict[name](ta)

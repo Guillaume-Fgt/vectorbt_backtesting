@@ -10,6 +10,7 @@ def main():
     st.header("Cac40 backtesting")
 
     col1, col2 = st.columns([2, 5])
+    # container: will be used by callback function calc_ind to populate the page
     cont = st.container()
     cont.write("")
     with col1:
