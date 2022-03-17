@@ -22,7 +22,7 @@ def list_ind():
 
 # TA = vbt.IndicatorFactory.from_pandas_ta("atr")
 # atr = TA.run(cac["High"], cac["Low"], cac["Close"], short_name="atr")
-# print(atr.output_names)
+# print(dir(atr))
 
 # TA = vbt.IndicatorFactory.from_pandas_ta("psl")
 # psl = TA.run(cac["Close"], cac["Open"])

@@ -1,5 +1,3 @@
-from tkinter.tix import COLUMN
-from matplotlib import container
 import vectorbt as vbt
 import pandas as pd
 import pandas_ta as ta
@@ -25,6 +23,7 @@ def calc_ind(col, container, indicator, dict_ind):
     output_names = ta.output_names
     functions_dict = {
         "rsi": rsi,
+        "atrr": atr,
     }
 
     for name in output_names:
@@ -44,38 +43,11 @@ def calc_ind(col, container, indicator, dict_ind):
             )
             return tuple_return
         else:
+            tuple_return = ()
             tuple_return = tuple_return + (
                 container.text(name),
                 container.dataframe(getattr(ta, name)),
             )
-    # try:
-    #     entries = getattr(ta, indicator).vbt.crossed_above(50)
-    #     exits = getattr(ta, indicator).vbt.crossed_below(50)
-    # except AttributeError:
-    #     return col.text("Not working yet")
-
-    # see indicator plot with unique entries and exits
-    # clean_entries, clean_exits = entries.vbt.signals.clean(exits)
-    # fig = plot_indicator(getattr(ta, indicator), clean_entries, clean_exits)
-
-    # # strategy
-    # portfolio = vbt.Portfolio.from_signals(
-    #     cac["Close"], entries, exits, init_cash=10000
-    # )
-    # fig_portfolio = portfolio.plot()
-    # tuple_return = (
-    #     #     col.text(portfolio.stats(silence_warnings=True)),
-    #     #     container.subheader("Indicator chart"),
-    #     container.plotly_chart(fig, use_container_width=True),
-    #     #     container.subheader("Strategy chart"),
-    #     #     container.plotly_chart(fig_portfolio, use_container_width=True),
-    # )
-    # return tuple_return
-
-    # PSL = vbt.IndicatorFactory.from_pandas_ta("psl")
-    # psl = PSL.run(cac["Close"], cac["Open"])
-    # entries = psl.psl.vbt.crossed_above(50)
-    # exits = psl.psl.vbt.crossed_below(50)
 
 
 def plot_indicator(indicator, entries, exits):
@@ -83,6 +55,9 @@ def plot_indicator(indicator, entries, exits):
     entries.vbt.signals.plot_as_entry_markers(indicator, fig=fig)
     exits.vbt.signals.plot_as_exit_markers(indicator, fig=fig)
     return fig
+
+
+# indicator functions
 
 
 def rsi(ta):
@@ -93,13 +68,9 @@ def rsi(ta):
     return entries, exits, fig
 
 
-# # strategy plot
-# portfolio = vbt.Portfolio.from_signals(cac["Close"], entries, exits, init_cash=10000)
-# # portfolio.plot().show()
-# print(
-#     portfolio.stats(
-#         ["total_return", "benchmark_return", "total_trades", "win_rate", "expectancy"]
-#     )
-# )
-
-# # buy_hold=vbt.Portfolio.from_holding(cac["Close"])
+def atr(ta):
+    # we don't want to trigger buy and sell as atr is just a metric
+    entries = ta.atrr_below(20)
+    exits = ta.atrr_below(20)
+    fig = plot_indicator(ta.atrr, entries, exits)
+    return entries, exits, fig
